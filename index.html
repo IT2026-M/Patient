@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سيستم مرضي</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root{
+    --teal:#0f766e; --teal-dark:#0b544e; --teal-light:#ccfbf1;
+    --bg:#f4f7f7; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+    --danger:#dc2626; --warn:#d97706; --warn-bg:#fef3c7; --danger-bg:#fee2e2;
+    --border:#e5e7eb; --blue:#1d4ed8; --blue-light:#dbeafe; --indigo:#4338ca; --indigo-light:#e0e7ff;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--bg);}
+  body{margin:0;font-family:"Segoe UI","Tahoma",Arial,sans-serif;color:var(--text);padding:24px;position:relative;}
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background-color:var(--bg);
+    background-image:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMjIwJyBoZWlnaHQ9JzIyMCcgdmlld0JveD0nMCAwIDIyMCAyMjAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+CiAgPGcgZmlsbD0nIzBmNzY2ZSc+CiAgICA8Y2lyY2xlIGN4PSc5MCcgY3k9JzQwJyByPScxNicvPgogICAgPHBhdGggZD0nTTYwIDEzMCBMNzAgNjUgUTkwIDU1IDExMCA2NSBMMTIwIDEzMCBROTAgMTQ2IDYwIDEzMCBaJy8+CiAgICA8cGF0aCBkPSdNNzggNTggUTY4IDkyIDg2IDExMiBROTYgMTIyIDEwMSAxMDknIHN0cm9rZT0nIzBmNzY2ZScgc3Ryb2tlLXdpZHRoPSc0JyBmaWxsPSdub25lJyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz4KICAgIDxjaXJjbGUgY3g9JzEwMScgY3k9JzEwOScgcj0nNicvPgogICAgPHBhdGggZD0nTTExOCA4OCBRMTQyIDk4IDE1MiAxMjAnIHN0cm9rZT0nIzBmNzY2ZScgc3Ryb2tlLXdpZHRoPSc2JyBmaWxsPSdub25lJyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz4KICA8L2c+CiAgPGcgZmlsbD0nIzE0YjhhNic+CiAgICA8Y2lyY2xlIGN4PScxNzYnIGN5PScxMjgnIHI9JzEwJy8+CiAgICA8cmVjdCB4PScxNTAnIHk9JzEzNicgd2lkdGg9JzU2JyBoZWlnaHQ9JzE3JyByeD0nOC41Jy8+CiAgPC9nPgogIDxnIGZpbGw9JyMwZjc2NmUnIG9wYWNpdHk9JzAuNTUnPgogICAgPHJlY3QgeD0nMTM4JyB5PScxNTcnIHdpZHRoPSc3OCcgaGVpZ2h0PSc2JyByeD0nMicvPgogICAgPHJlY3QgeD0nMTQ2JyB5PScxNjMnIHdpZHRoPSc0JyBoZWlnaHQ9JzE1Jy8+CiAgICA8cmVjdCB4PScyMDAnIHk9JzE2Mycgd2lkdGg9JzQnIGhlaWdodD0nMTUnLz4KICA8L2c+CiAgPGcgZmlsbD0nIzBmNzY2ZScgb3BhY2l0eT0nMC41Jz4KICAgIDxyZWN0IHg9JzE2JyB5PScyNCcgd2lkdGg9JzE2JyBoZWlnaHQ9JzQnIHJ4PScyJy8+CiAgICA8cmVjdCB4PScyMicgeT0nMTgnIHdpZHRoPSc0JyBoZWlnaHQ9JzE2JyByeD0nMicvPgogIDwvZz4KPC9zdmc+Cg==");
+    background-repeat:repeat;
+    background-size:210px 210px;
+    opacity:0.16;
+  }
+  .wrap{max-width:1150px;margin:0 auto;}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+  header h1{font-size:20px;color:var(--teal-dark);margin:0;display:flex;align-items:center;gap:10px;}
+  header h1 span.icon{width:38px;height:38px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;}
+  .role-tag{font-size:12px;background:var(--teal-light);color:var(--teal-dark);padding:4px 10px;border-radius:999px;font-weight:700;}
+  .role-tag.doctor{background:var(--blue-light);color:var(--blue);}
+  .header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .btn{background:var(--teal);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:14px;cursor:pointer;font-weight:600;transition:.15s;}
+  .btn:hover{background:var(--teal-dark);}
+  .btn.secondary{background:#fff;color:var(--teal);border:1.5px solid var(--teal);}
+  .btn.secondary:hover{background:var(--teal-light);}
+  .btn.danger{background:var(--danger);}
+  .btn.danger:hover{background:#b91c1c;}
+  .btn.blue{background:var(--blue);}
+  .btn.blue:hover{background:#1e3a8a;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btn.full{width:100%;}
+
+  #langToggleBtn{position:fixed;top:14px;inset-inline-start:14px;z-index:200;background:#fff;border:1.5px solid var(--teal);color:var(--teal);padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.08);}
+  #langToggleBtn:hover{background:var(--teal-light);}
+
+  .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+  .toolbar input[type=text]{flex:1;min-width:200px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:#fff;}
+  .toolbar select{padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:#fff;}
+
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);}
+  .tab.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+
+  .stats{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;flex:1;min-width:140px;text-align:center;}
+  .stat-card .num{font-size:24px;font-weight:700;color:var(--teal-dark);}
+  .stat-card .label{font-size:13px;color:var(--muted);margin-top:4px;}
+  .stat-card.warn .num{color:var(--warn);}
+  .stat-card.danger .num{color:var(--danger);}
+
+  table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  thead tr{background:var(--teal);color:#fff;}
+  th,td{padding:12px 14px;text-align:start;font-size:14px;}
+  tbody tr{border-bottom:1px solid var(--border);}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:#f9fafb;}
+  .row-danger{background:var(--danger-bg) !important;}
+  .row-warn{background:var(--warn-bg) !important;}
+
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;}
+  .badge.ok{background:var(--teal-light);color:var(--teal-dark);}
+  .badge.soon{background:var(--warn-bg);color:var(--warn);}
+  .badge.late{background:var(--danger-bg);color:var(--danger);}
+  .badge.repeat{background:var(--indigo-light);color:var(--indigo);}
+
+  .actions{display:flex;gap:6px;flex-wrap:wrap;}
+  .icon-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:5px 9px;cursor:pointer;font-size:13px;color:var(--text);}
+  .icon-btn:hover{background:#f3f4f6;}
+  .icon-btn.edit:hover{border-color:var(--teal);color:var(--teal);}
+  .icon-btn.del:hover{border-color:var(--danger);color:var(--danger);}
+  .icon-btn.print:hover{border-color:var(--blue);color:var(--blue);}
+
+  .empty{text-align:center;padding:50px 20px;color:var(--muted);background:var(--card);border-radius:10px;}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px;}
+  .overlay.show{display:flex;}
+  .modal{background:#fff;border-radius:14px;padding:24px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;}
+  .modal h2{margin-top:0;font-size:18px;color:var(--teal-dark);}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;margin-bottom:6px;color:var(--muted);font-weight:600;}
+  .field input, .field textarea, .field select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;background:#fff;}
+  .field textarea{resize:vertical;min-height:60px;}
+  .field input:disabled, .field textarea:disabled{background:#f3f4f6;color:var(--muted);}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+
+  .loading{text-align:center;padding:40px;color:var(--muted);}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px;}
+
+  .role-screen{min-height:70vh;display:flex;align-items:center;justify-content:center;}
+  .role-cards{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;}
+  .role-card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:36px 30px;width:250px;text-align:center;cursor:pointer;transition:.15s;}
+  .role-card:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08);}
+  .role-card.static{cursor:default;}
+  .role-card.static:hover{transform:none;box-shadow:none;border-color:var(--border);}
+  .role-card .emoji{font-size:40px;margin-bottom:12px;}
+  .role-card h3{margin:0 0 6px;color:var(--teal-dark);font-size:17px;}
+  .role-card p{color:var(--muted);font-size:13px;margin:0 0 14px;}
+  .notice{background:var(--blue-light);color:#1e3a8a;padding:10px 14px;border-radius:8px;font-size:12.5px;margin-bottom:18px;text-align:center;}
+  .error-text{color:var(--danger);font-size:12.5px;margin-bottom:10px;display:none;}
+
+  .report-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .report-row:last-child{border-bottom:none;}
+
+  #printArea{display:none;}
+  @media print{
+    body *{visibility:hidden;}
+    #printArea, #printArea *{visibility:visible;}
+    #printArea{display:block;position:absolute;top:0;inset-inline-start:0;inset-inline-end:0;padding:26px;font-family:"Segoe UI","Tahoma",Arial,sans-serif;color:#1f2937;}
+
+    .print-header{text-align:center;border-bottom:3px solid #0f766e;padding-bottom:16px;margin-bottom:22px;}
+    .print-header h2{margin:0 0 6px;color:#0f766e;font-size:20px;}
+    .print-header .print-date{font-size:12px;color:#6b7280;}
+
+    .print-section{margin-bottom:18px;}
+    .print-section-title{font-size:13px;font-weight:700;color:#0f766e;background:#ccfbf1;padding:6px 12px;border-radius:6px;margin-bottom:8px;}
+
+    .print-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;}
+    .print-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb;font-size:13.5px;}
+    .print-row .label{font-weight:700;color:#374151;}
+
+    .print-box{border:1px solid #e5e7eb;border-radius:8px;padding:12px 14px;font-size:13.5px;line-height:1.7;min-height:34px;white-space:pre-wrap;}
+
+    .print-footer{margin-top:44px;display:flex;justify-content:space-between;align-items:flex-end;page-break-inside:avoid;}
+    .print-footer .footer-note{font-size:11px;color:#9ca3af;}
+    .print-signature{text-align:center;min-width:220px;}
+    .print-signature .sig-line{border-top:1.5px solid #374151;margin-top:46px;padding-top:6px;font-size:13px;font-weight:700;color:#374151;}
+    .print-signature .sig-caption{font-size:11.5px;color:#6b7280;margin-top:2px;}
+  }
+</style>
+</head>
+<body>
+
+<button id="langToggleBtn" onclick="toggleLanguage()">EN</button>
+
+<!-- Password gate -->
+<div class="role-screen" id="loginScreen">
+  <div style="max-width:340px;width:100%;">
+    <div style="text-align:center;margin-bottom:22px;">
+      <div style="font-size:44px;margin-bottom:8px;">🩺</div>
+      <h2 style="margin:0 0 6px;color:var(--teal-dark);font-size:22px;" data-i18n="welcomeTitle"></h2>
+      <p style="margin:0;color:var(--muted);font-size:14px;" data-i18n="welcomeSubtitle"></p>
+    </div>
+    <div class="role-card static">
+      <div class="emoji">🔒</div>
+      <h3 data-i18n="loginTitle"></h3>
+      <p data-i18n="loginSubtitle"></p>
+      <input type="password" id="loginPassword" data-i18n-placeholder="passwordPlaceholder" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;margin-bottom:10px;">
+      <div class="error-text" id="loginError" data-i18n="loginError"></div>
+      <button class="btn full" id="loginBtn" data-i18n="loginBtn"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Role selection -->
+<div class="role-screen" id="roleScreen" style="display:none;">
+  <div>
+    <div class="notice" data-i18n="chooseInterface"></div>
+    <div class="role-cards">
+      <div class="role-card" onclick="selectRole('reception')">
+        <div class="emoji">🗂️</div>
+        <h3 data-i18n="receptionTitle"></h3>
+        <p data-i18n="receptionDesc"></p>
+      </div>
+      <div class="role-card" onclick="selectRole('doctor')">
+        <div class="emoji">👨‍⚕️</div>
+        <h3 data-i18n="doctorTitle"></h3>
+        <p data-i18n="doctorDesc"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="mainApp" style="display:none;">
+  <header>
+    <h1><span class="icon">🩺</span> <span data-i18n="appTitle"></span> <span class="role-tag" id="roleTag"></span></h1>
+    <div class="header-actions">
+      <button class="btn secondary" id="switchRoleBtn" data-i18n="switchInterface"></button>
+      <button class="btn secondary" id="settingsBtn" style="display:none;" data-i18n="settingsBtn"></button>
+      <button class="btn secondary" id="signatureBtn" style="display:none;" data-i18n="signatureBtn"></button>
+      <button class="btn blue" id="exportBtn" data-i18n="exportBtn"></button>
+      <button class="btn" id="addBtn" data-i18n="addBtn"></button>
+      <button class="btn secondary" id="driveConnectBtn"></button>
+    </div>
+  </header>
+
+  <div id="driveStatusBar" style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span id="driveStatusText"></span>
+    <button type="button" id="driveDisconnectBtn" style="display:none;background:none;border:none;color:var(--danger);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;" data-i18n="driveDisconnectBtn"></button>
+  </div>
+
+  <div class="tabs" id="doctorTabs" style="display:none;">
+    <div class="tab active" data-tab="today" data-i18n="tabToday"></div>
+    <div class="tab" data-tab="upcoming" data-i18n="tabUpcoming"></div>
+    <div class="tab" data-tab="all" data-i18n="tabAll"></div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div id="cashCard" style="display:none;background:linear-gradient(135deg,#0f766e,#0b544e);color:#fff;border-radius:12px;padding:18px 22px;margin-bottom:16px;">
+    <div style="font-size:14px;opacity:.9;margin-bottom:10px;" data-i18n="cashTitle"></div>
+    <div id="cashCardBody" style="display:flex;gap:24px;flex-wrap:wrap;"></div>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder">
+    <select id="sortSelect">
+      <option value="next_asc" data-i18n="sortNextAsc"></option>
+      <option value="next_desc" data-i18n="sortNextDesc"></option>
+      <option value="name" data-i18n="sortName"></option>
+      <option value="exam_desc" data-i18n="sortExamDesc"></option>
+    </select>
+  </div>
+
+  <div id="content" class="loading">...</div>
+
+  <footer data-i18n="footerText"></footer>
+</div>
+
+<!-- Add/Edit modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle"></h2>
+    <form id="patientForm">
+      <div class="field"><label data-i18n="labelName"></label><input type="text" id="f_name" required></div>
+      <div class="field"><label data-i18n="labelPhone"></label><input type="text" id="f_phone"></div>
+      <div class="field"><label data-i18n="labelVisitType"></label>
+        <select id="f_visitType">
+          <option value="New" data-i18n="visitNew"></option>
+          <option value="Repeat" data-i18n="visitRepeat"></option>
+        </select>
+      </div>
+      <div class="field"><label data-i18n="labelExamDate"></label><input type="date" id="f_examDate" required></div>
+
+      <div id="diagnosisSection">
+        <div class="field"><label data-i18n="labelCondition"></label><textarea id="f_condition" data-i18n-placeholder="placeholderCondition"></textarea></div>
+        <div class="field"><label data-i18n="labelTreatment"></label><textarea id="f_treatment" data-i18n-placeholder="placeholderTreatment"></textarea></div>
+      </div>
+      <div class="field" id="diagnosisHint" style="display:none;">
+        <div style="font-size:12.5px;color:var(--muted);background:var(--teal-light);padding:8px 12px;border-radius:8px;" data-i18n="diagnosisHintText"></div>
+      </div>
+
+      <div class="field"><label data-i18n="labelNextDate"></label><input type="date" id="f_nextDate"></div>
+
+      <div class="field" id="reportsSection" style="display:none;">
+        <label data-i18n="labelReports"></label>
+        <div id="reportsList" style="margin-bottom:8px;"></div>
+        <input type="file" id="reportFileInput" accept="image/*,application/pdf">
+        <div style="font-size:11.5px;color:var(--muted);margin-top:4px;" data-i18n="reportsHintFile"></div>
+      </div>
+      <div class="field" id="reportsHint" style="display:none;">
+        <div style="font-size:12.5px;color:var(--muted);" data-i18n="reportsHintSaveFirst"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="cancelBtn" data-i18n="cancel"></button>
+        <button type="submit" class="btn" id="saveBtn" data-i18n="save"></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Pricing settings modal -->
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <h2 data-i18n="settingsTitle"></h2>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:-8px;" data-i18n="settingsDesc"></p>
+    <form id="settingsForm">
+      <div class="field"><label data-i18n="labelNewPrice"></label><input type="number" min="0" step="1" id="s_newPrice" required></div>
+      <div class="field"><label data-i18n="labelRepeatPrice"></label><input type="number" min="0" step="1" id="s_repeatPrice" required></div>
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="settingsCancelBtn" data-i18n="cancel"></button>
+        <button type="submit" class="btn" data-i18n="saveSettings"></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Doctor signature settings modal -->
+<div class="overlay" id="signatureOverlay">
+  <div class="modal">
+    <h2 data-i18n="signatureTitle"></h2>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:-8px;" data-i18n="signatureDesc"></p>
+    <form id="signatureForm">
+      <div class="field"><label data-i18n="labelDoctorName"></label><input type="text" id="sig_doctorName"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="signatureCancelBtn" data-i18n="cancel"></button>
+        <button type="submit" class="btn" data-i18n="saveSignature"></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Print area -->
+<div id="printArea">
+  <div class="print-header">
+    <h2 id="printTitle"></h2>
+    <div class="print-date" id="printDate"></div>
+  </div>
+  <div id="printBody"></div>
+</div>
+
+<script>
+const SYSTEM_PASSWORD = "Attia@2026";
+
+/* ====== Google Drive sync settings ======
+   1) Create a project at https://console.cloud.google.com
+   2) Enable the "Google Drive API" for it
+   3) Configure the OAuth consent screen (External, add your Google account as a test user)
+   4) Create an OAuth Client ID (type: Web application), and add your GitHub Pages URL
+      (e.g. https://yourusername.github.io) under "Authorized JavaScript origins"
+   5) Paste the Client ID below between the quotes
+*/
+const GOOGLE_CLIENT_ID = "YOUR_CLIENT_ID_HERE.apps.googleusercontent.com";
+const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
+const DRIVE_FILE_NAME = "clinic_system_data.json";
+
+let googleTokenClient = null;
+let googleAccessToken = null;
+let driveFileId = null;
+let driveSyncTimer = null;
+
+let patients = [];
+let editingId = null;
+let currentRole = null;
+let doctorTab = 'today';
+let pricing = { newPrice: 0, repeatPrice: 0 };
+let doctorSignature = { doctorName: '' };
+let LANG = 'ar';
+
+const translations = {
+  ar: {
+    welcomeTitle:'أهلاً بيك 👋', welcomeSubtitle:'سجّل دخولك عشان تكمل متابعة مرضاك بسهولة وسرعة',
+    loginTitle:'دخول النظام', loginSubtitle:'أدخل كلمة المرور للمتابعة', passwordPlaceholder:'كلمة المرور',
+    loginError:'كلمة المرور غير صحيحة', loginBtn:'دخول',
+    chooseInterface:'اختر واجهتك للدخول',
+    receptionTitle:'واجهة الاستقبال', receptionDesc:'تسجيل المرضى، حجز المواعيد، تعديل وحذف البيانات، طباعة وتصدير',
+    doctorTitle:'واجهة الدكتور', doctorDesc:'عرض الحالات، تحديد كشف/إعادة، تحديث التشخيص والعلاج، رفع التقارير وطباعتها',
+    appTitle:'سيستم مرضي',
+    roleTagReception:'واجهة الاستقبال', roleTagDoctor:'واجهة الدكتور',
+    switchInterface:'تبديل الواجهة', settingsBtn:'⚙️ أسعار الكشف والإعادة', exportBtn:'تصدير Excel', addBtn:'+ إضافة مريض جديد',
+    tabToday:'كشف اليوم', tabUpcoming:'المواعيد القادمة', tabAll:'كل المرضى',
+    cashTitle:'💰 الخزنة اليوم (بناءً على الحالات اللي تم الكشف عليها فعلاً)',
+    cashNewLabel:'كشف جديد (تم فعلاً)', cashRepeatLabel:'إعادة (تمت فعلاً)', cashTotalLabel:'الإجمالي', cashPendingLabel:'لسه منتظرين الكشف', cashSeenTodayLabel:'تم الكشف عليهم اليوم', currency:'جنيه',
+    searchPlaceholder:'بحث بالاسم أو الحالة...',
+    sortNextAsc:'الأقرب موعداً أولاً', sortNextDesc:'الأبعد موعداً أولاً', sortName:'حسب الاسم', sortExamDesc:'أحدث كشف أولاً',
+    statTotal:'إجمالي المرضى المعروضين', statSoon:'مواعيد قريبة (خلال 3 أيام)', statLate:'مواعيد متأخرة',
+    thName:'الاسم', thPhone:'الهاتف', thVisitType:'نوع الزيارة', thExamDate:'تاريخ الكشف', thCondition:'الحالة',
+    thTreatment:'آخر علاج', thNextDate:'معاد الكشف القادم', thAttended:'تم الكشف؟', thActions:'إجراءات',
+    noAppointment:'لا يوجد موعد', overdueDays:(n)=>`متأخر ${n} يوم`, soonDays:(n)=>`قريب (${n} يوم)`,
+    visitNew:'كشف جديد', visitRepeat:'إعادة', attendedDone:'✓ تم', attendedPending:'لسه',
+    btnUpdate:'تحديث', btnEdit:'تعديل', btnPrint:'طباعة', btnDelete:'حذف', emptyState:'لا يوجد مرضى في هذا القسم.',
+    modalAddTitle:'إضافة مريض جديد', modalEditTitle:'تعديل بيانات المريض',
+    labelName:'اسم المريض *', labelPhone:'رقم الهاتف', labelVisitType:'نوع الزيارة', labelExamDate:'تاريخ الكشف *',
+    labelCondition:'الحالة / التشخيص', placeholderCondition:'مثال: قرحة معدية، ارتجاع مريئي...',
+    labelTreatment:'آخر علاج', placeholderTreatment:'الأدوية والجرعات...', labelNextDate:'معاد الكشف القادم',
+    labelReports:'التقارير المرفوعة', noReports:'لا يوجد تقارير مرفوعة',
+    reportsHintFile:'صور أو PDF، بحد أقصى تقريباً 4 ميجابايت للملف',
+    reportsHintSaveFirst:'احفظ المريض أولاً، ثم افتح "تعديل" لرفع تقاريره',
+    reportView:'عرض', reportDelete:'حذف', cancel:'إلغاء', save:'حفظ',
+    settingsTitle:'أسعار الكشف والإعادة', settingsDesc:'هذه الأسعار تُستخدم لحساب إجمالي الخزنة تلقائياً، ولا تظهر في تقرير المريض المطبوع.',
+    labelNewPrice:'سعر الكشف الجديد (جنيه)', labelRepeatPrice:'سعر الإعادة (جنيه)', saveSettings:'حفظ الأسعار',
+    signatureBtn:'🖊️ بيانات التوقيع', signatureTitle:'بيانات توقيع الدكتور',
+    signatureDesc:'الاسم اللي هيتسجل هنا هيظهر كتوقيع في كل تقرير مريض بيتم طباعته.',
+    labelDoctorName:'اسم الدكتور', saveSignature:'حفظ التوقيع',
+    alertSignatureSaveError:'تعذر حفظ بيانات التوقيع، حاول مرة أخرى',
+    diagnosisHintText:'حقول الحالة والتشخيص وآخر علاج بيضيفها الدكتور من واجهته قبل طباعة التقرير.',
+    printReportTitle:'تقرير كشف مريض', printDateLabel:'تاريخ الطباعة:',
+    printPatientInfoTitle:'بيانات المريض', printNoData:'لم يتم إدخال بيانات بعد',
+    printGeneratedNote:'تقرير تم إصداره إلكترونياً من نظام متابعة المرضى',
+    printSignatureLabel:'توقيع الدكتور', printSignatureCaption:'توقيع وختم الطبيب المعالج',
+    footerText:'البيانات والتقارير مشتركة بين واجهتي الاستقبال والدكتور، وتُحفظ تلقائياً',
+    driveConnectBtn:'ربط بجوجل درايف', driveSyncNowBtn:'مزامنة الآن', driveDisconnectBtn:'قطع الاتصال',
+    driveConnecting:'جاري الاتصال بجوجل درايف...',
+    driveConnectedLoaded:'✅ تم الاتصال بجوجل درايف، وتم تحميل آخر نسخة محفوظة',
+    driveConnectedNew:'✅ تم الاتصال بجوجل درايف، وتم إنشاء ملف بيانات جديد',
+    driveConnectError:'⚠️ حصل خطأ أثناء الاتصال بجوجل درايف، حاول تاني',
+    driveSynced:'✅ تم حفظ آخر تحديث على جوجل درايف',
+    driveSyncError:'⚠️ تعذر حفظ آخر تحديث على درايف، هيتم المحاولة تاني عند أي تعديل جديد',
+    driveNoClientId:'الربط بجوجل درايف لسه مش متظبط في الكود. لازم تضيف Google Client ID الخاص بيك أولاً في متغير GOOGLE_CLIENT_ID (راجع تعليمات الإعداد في أول السكريبت).',
+    alertFillRequired:'برجاء إدخال اسم المريض وتاريخ الكشف',
+    confirmDeletePatient:'هل أنت متأكد من حذف بيانات هذا المريض؟ سيتم حذف تقاريره أيضاً.',
+    alertSaveError:'حدث خطأ أثناء الحفظ، حاول مرة أخرى', alertNoDataExport:'لا يوجد بيانات لتصديرها',
+    alertReportSaveError:'تعذر حفظ التقرير، قد يكون الملف كبيراً جداً',
+    alertFileTooBig:'حجم الملف كبير جداً، برجاء اختيار ملف أصغر من 4 ميجابايت',
+    confirmDeleteReport:'حذف هذا التقرير؟', alertPopupBlocked:'برجاء السماح بفتح النوافذ المنبثقة لعرض التقرير',
+    alertSettingsSaveError:'تعذر حفظ الأسعار، حاول مرة أخرى',
+    csvName:'اسم المريض', csvPhone:'رقم الهاتف', csvVisitType:'نوع الزيارة', csvExamDate:'تاريخ الكشف',
+    csvCondition:'الحالة', csvTreatment:'آخر علاج', csvNextDate:'معاد الكشف القادم', exportFilePrefix:'مرضى_العيادة_',
+    langToggle:'EN', locale:'ar-EG'
+  },
+  en: {
+    welcomeTitle:'Welcome 👋', welcomeSubtitle:'Log in to continue tracking your patients easily and quickly',
+    loginTitle:'System Login', loginSubtitle:'Enter the password to continue', passwordPlaceholder:'Password',
+    loginError:'Incorrect password', loginBtn:'Login',
+    chooseInterface:'Choose your interface',
+    receptionTitle:'Reception Interface', receptionDesc:'Register patients, book appointments, edit/delete records, print and export',
+    doctorTitle:'Doctor Interface', doctorDesc:'View cases, mark new/follow-up, update diagnosis & treatment, upload and print reports',
+    appTitle:'My Patients System',
+    roleTagReception:'Reception Interface', roleTagDoctor:'Doctor Interface',
+    switchInterface:'Switch Interface', settingsBtn:'⚙️ Visit & Follow-up Prices', exportBtn:'Export Excel', addBtn:'+ Add New Patient',
+    tabToday:"Today's Visits", tabUpcoming:'Upcoming Appointments', tabAll:'All Patients',
+    cashTitle:"💰 Today's Cash (based on cases actually seen today)",
+    cashNewLabel:'New visit (completed)', cashRepeatLabel:'Follow-up (completed)', cashTotalLabel:'Total', cashPendingLabel:'Still waiting', cashSeenTodayLabel:'Seen today', currency:'EGP',
+    searchPlaceholder:'Search by name or condition...',
+    sortNextAsc:'Soonest appointment first', sortNextDesc:'Furthest appointment first', sortName:'By name', sortExamDesc:'Most recent visit first',
+    statTotal:'Total patients shown', statSoon:'Upcoming (within 3 days)', statLate:'Overdue',
+    thName:'Name', thPhone:'Phone', thVisitType:'Visit Type', thExamDate:'Visit Date', thCondition:'Condition',
+    thTreatment:'Last Treatment', thNextDate:'Next Appointment', thAttended:'Seen?', thActions:'Actions',
+    noAppointment:'No appointment', overdueDays:(n)=>`Overdue ${n} day(s)`, soonDays:(n)=>`Soon (${n} day(s))`,
+    visitNew:'New Visit', visitRepeat:'Follow-up', attendedDone:'✓ Done', attendedPending:'Pending',
+    btnUpdate:'Update', btnEdit:'Edit', btnPrint:'Print', btnDelete:'Delete', emptyState:'No patients in this section.',
+    modalAddTitle:'Add New Patient', modalEditTitle:'Edit Patient Data',
+    labelName:'Patient Name *', labelPhone:'Phone Number', labelVisitType:'Visit Type', labelExamDate:'Visit Date *',
+    labelCondition:'Condition / Diagnosis', placeholderCondition:'e.g. Gastric ulcer, GERD...',
+    labelTreatment:'Last Treatment', placeholderTreatment:'Medications and dosages...', labelNextDate:'Next Appointment',
+    labelReports:'Uploaded Reports', noReports:'No reports uploaded',
+    reportsHintFile:'Images or PDF, max ~4MB per file',
+    reportsHintSaveFirst:'Save the patient first, then open "Edit" to upload reports',
+    reportView:'View', reportDelete:'Delete', cancel:'Cancel', save:'Save',
+    settingsTitle:'Visit & Follow-up Prices', settingsDesc:'These prices are used to auto-calculate the cash total, and never appear in the printed patient report.',
+    labelNewPrice:'New Visit Price (EGP)', labelRepeatPrice:'Follow-up Price (EGP)', saveSettings:'Save Prices',
+    signatureBtn:'🖊️ Signature Info', signatureTitle:'Doctor Signature Info',
+    signatureDesc:'The name saved here will appear as the signature on every printed patient report.',
+    labelDoctorName:"Doctor's Name", saveSignature:'Save Signature',
+    alertSignatureSaveError:'Could not save signature info, please try again',
+    diagnosisHintText:'The condition, diagnosis and treatment fields are added by the doctor from their interface before the report is printed.',
+    printReportTitle:'Patient Visit Report', printDateLabel:'Print date:',
+    printPatientInfoTitle:'Patient Information', printNoData:'Not entered yet',
+    printGeneratedNote:'Report generated electronically by the patient tracking system',
+    printSignatureLabel:"Doctor's Signature", printSignatureCaption:"Treating physician's signature & stamp",
+    footerText:'Data and reports are shared between the reception and doctor interfaces, and saved automatically',
+    driveConnectBtn:'Connect Google Drive', driveSyncNowBtn:'Sync Now', driveDisconnectBtn:'Disconnect',
+    driveConnecting:'Connecting to Google Drive...',
+    driveConnectedLoaded:'✅ Connected to Google Drive, latest saved copy loaded',
+    driveConnectedNew:'✅ Connected to Google Drive, a new data file was created',
+    driveConnectError:'⚠️ An error occurred connecting to Google Drive, please try again',
+    driveSynced:'✅ Latest update saved to Google Drive',
+    driveSyncError:'⚠️ Could not save the latest update to Drive, it will retry on the next change',
+    driveNoClientId:'Google Drive is not configured in the code yet. Add your Google Client ID to the GOOGLE_CLIENT_ID variable first (see setup instructions at the top of the script).',
+    alertFillRequired:'Please enter the patient name and visit date',
+    confirmDeletePatient:"Are you sure you want to delete this patient? Their reports will also be deleted.",
+    alertSaveError:'An error occurred while saving, please try again', alertNoDataExport:'No data to export',
+    alertReportSaveError:'Could not save the report, the file may be too large',
+    alertFileTooBig:'File is too large, please choose a file smaller than 4MB',
+    confirmDeleteReport:'Delete this report?', alertPopupBlocked:'Please allow pop-ups to view the report',
+    alertSettingsSaveError:'Could not save prices, please try again',
+    csvName:'Patient Name', csvPhone:'Phone', csvVisitType:'Visit Type', csvExamDate:'Visit Date',
+    csvCondition:'Condition', csvTreatment:'Last Treatment', csvNextDate:'Next Appointment', exportFilePrefix:'clinic_patients_',
+    langToggle:'AR', locale:'en-US'
+  }
+};
+
+function t(key){ return translations[LANG][key]; }
+
+function setLanguageDirection(){
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
+}
+
+function applyStaticTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(translations[LANG][key] !== undefined && typeof translations[LANG][key] !== 'function'){
+      el.textContent = translations[LANG][key];
+    }
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-placeholder');
+    if(translations[LANG][key] !== undefined) el.placeholder = translations[LANG][key];
+  });
+  document.getElementById('langToggleBtn').textContent = t('langToggle');
+}
+
+async function toggleLanguage(){
+  LANG = LANG === 'ar' ? 'en' : 'ar';
+  setLanguageDirection();
+  applyStaticTranslations();
+  try{ await window.storage.set('ui_language', LANG, false); }catch(e){}
+  if(currentRole){
+    const tag = document.getElementById('roleTag');
+    tag.textContent = currentRole === 'doctor' ? t('roleTagDoctor') : t('roleTagReception');
+    render();
+    updateDriveStatus(driveStatusKey);
+  }
+  if(document.getElementById('overlay').classList.contains('show')){
+    document.getElementById('modalTitle').textContent = editingId ? t('modalEditTitle') : t('modalAddTitle');
+    if(editingId) renderReportsList(editingId);
+  }
+}
+
+(async function initLanguage(){
+  try{
+    const res = await window.storage.get('ui_language', false);
+    if(res && res.value) LANG = res.value;
+  }catch(e){}
+  setLanguageDirection();
+  applyStaticTranslations();
+})();
+
+document.getElementById('loginBtn').addEventListener('click', tryLogin);
+document.getElementById('loginPassword').addEventListener('keydown', e=>{ if(e.key==='Enter') tryLogin(); });
+function tryLogin(){
+  const val = document.getElementById('loginPassword').value;
+  if(val === SYSTEM_PASSWORD){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('roleScreen').style.display='flex';
+  } else {
+    document.getElementById('loginError').style.display='block';
+  }
+}
+
+function selectRole(role){
+  currentRole = role;
+  document.getElementById('roleScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  const tag = document.getElementById('roleTag');
+  if(role === 'doctor'){
+    tag.textContent = t('roleTagDoctor');
+    tag.className = 'role-tag doctor';
+    document.getElementById('addBtn').style.display = 'none';
+    document.getElementById('doctorTabs').style.display = 'flex';
+    document.getElementById('settingsBtn').style.display = 'none';
+    document.getElementById('signatureBtn').style.display = 'inline-block';
+  } else {
+    tag.textContent = t('roleTagReception');
+    tag.className = 'role-tag';
+    document.getElementById('addBtn').style.display = 'inline-block';
+    document.getElementById('doctorTabs').style.display = 'none';
+    document.getElementById('settingsBtn').style.display = 'inline-block';
+    document.getElementById('signatureBtn').style.display = 'none';
+  }
+  loadPricing().then(()=>{ loadPatients(); });
+  loadSignature();
+  updateDriveStatus('');
+  initGoogleClient();
+}
+
+async function loadPricing(){
+  try{
+    const res = await window.storage.get('pricing_settings', true);
+    pricing = res && res.value ? JSON.parse(res.value) : { newPrice: 0, repeatPrice: 0 };
+  }catch(e){
+    pricing = { newPrice: 0, repeatPrice: 0 };
+  }
+}
+async function savePricing(){
+  try{
+    await window.storage.set('pricing_settings', JSON.stringify(pricing), true);
+    scheduleDriveSync();
+    return true;
+  }catch(e){
+    alert(t('alertSettingsSaveError'));
+    return false;
+  }
+}
+
+document.getElementById('settingsBtn').addEventListener('click', ()=>{
+  document.getElementById('s_newPrice').value = pricing.newPrice || 0;
+  document.getElementById('s_repeatPrice').value = pricing.repeatPrice || 0;
+  document.getElementById('settingsOverlay').classList.add('show');
+});
+document.getElementById('settingsCancelBtn').addEventListener('click', ()=>{
+  document.getElementById('settingsOverlay').classList.remove('show');
+});
+document.getElementById('settingsOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'settingsOverlay') document.getElementById('settingsOverlay').classList.remove('show');
+});
+document.getElementById('settingsForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  pricing.newPrice = Number(document.getElementById('s_newPrice').value) || 0;
+  pricing.repeatPrice = Number(document.getElementById('s_repeatPrice').value) || 0;
+  const ok = await savePricing();
+  if(ok){
+    document.getElementById('settingsOverlay').classList.remove('show');
+    render();
+  }
+});
+
+async function loadSignature(){
+  try{
+    const res = await window.storage.get('doctor_signature', true);
+    doctorSignature = res && res.value ? JSON.parse(res.value) : { doctorName: '' };
+  }catch(e){
+    doctorSignature = { doctorName: '' };
+  }
+}
+async function saveSignature(){
+  try{
+    await window.storage.set('doctor_signature', JSON.stringify(doctorSignature), true);
+    scheduleDriveSync();
+    return true;
+  }catch(e){
+    alert(t('alertSignatureSaveError'));
+    return false;
+  }
+}
+
+document.getElementById('signatureBtn').addEventListener('click', ()=>{
+  document.getElementById('sig_doctorName').value = doctorSignature.doctorName || '';
+  document.getElementById('signatureOverlay').classList.add('show');
+});
+document.getElementById('signatureCancelBtn').addEventListener('click', ()=>{
+  document.getElementById('signatureOverlay').classList.remove('show');
+});
+document.getElementById('signatureOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'signatureOverlay') document.getElementById('signatureOverlay').classList.remove('show');
+});
+document.getElementById('signatureForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  doctorSignature.doctorName = document.getElementById('sig_doctorName').value.trim();
+  const ok = await saveSignature();
+  if(ok){
+    document.getElementById('signatureOverlay').classList.remove('show');
+  }
+});
+
+document.querySelectorAll('.tab').forEach(tabEl=>{
+  tabEl.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tabEl.classList.add('active');
+    doctorTab = tabEl.dataset.tab;
+    render();
+  });
+});
+
+async function loadPatients(){
+  try{
+    const result = await window.storage.get('patients_list', true);
+    patients = result && result.value ? JSON.parse(result.value) : [];
+  }catch(e){
+    patients = [];
+  }
+  render();
+}
+async function savePatients(){
+  try{
+    await window.storage.set('patients_list', JSON.stringify(patients), true);
+    scheduleDriveSync();
+  }catch(e){
+    alert(t('alertSaveError'));
+  }
+}
+
+/* ====== Google Drive integration ====== */
+let driveStatusKey = '';
+function updateDriveStatus(statusKey){
+  driveStatusKey = statusKey || '';
+  const bar = document.getElementById('driveStatusBar');
+  const label = document.getElementById('driveStatusText');
+  const disconnectBtn = document.getElementById('driveDisconnectBtn');
+  const text = driveStatusKey ? t(driveStatusKey) : '';
+  label.textContent = text;
+  disconnectBtn.style.display = googleAccessToken ? 'inline' : 'none';
+  bar.style.display = text ? 'flex' : 'none';
+  const btn = document.getElementById('driveConnectBtn');
+  if(googleAccessToken){
+    btn.textContent = '🔄 ' + t('driveSyncNowBtn');
+  } else {
+    btn.textContent = '🔗 ' + t('driveConnectBtn');
+  }
+}
+
+function initGoogleClient(){
+  if(!(window.google && google.accounts && google.accounts.oauth2)) return false;
+  if(googleTokenClient) return true;
+  googleTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: DRIVE_SCOPE,
+    callback: async (resp)=>{
+      if(resp && resp.error){
+        updateDriveStatus('driveConnectError');
+        return;
+      }
+      googleAccessToken = resp.access_token;
+      updateDriveStatus('driveConnecting');
+      await connectDriveFlow();
+    }
+  });
+  return true;
+}
+
+function handleDriveButtonClick(){
+  if(GOOGLE_CLIENT_ID.indexOf('YOUR_CLIENT_ID') !== -1){
+    alert(t('driveNoClientId'));
+    return;
+  }
+  if(googleAccessToken){
+    scheduleDriveSync(true);
+    return;
+  }
+  if(!initGoogleClient()){
+    alert(t('driveNoClientId'));
+    return;
+  }
+  googleTokenClient.requestAccessToken({ prompt: 'consent' });
+}
+
+function disconnectGoogle(){
+  if(googleAccessToken && window.google && google.accounts && google.accounts.oauth2){
+    google.accounts.oauth2.revoke(googleAccessToken, ()=>{});
+  }
+  googleAccessToken = null;
+  driveFileId = null;
+  updateDriveStatus('');
+}
+
+function driveHeaders(extra){
+  return Object.assign({ 'Authorization': 'Bearer ' + googleAccessToken }, extra || {});
+}
+
+async function driveFindFile(){
+  const q = encodeURIComponent(`name='${DRIVE_FILE_NAME}' and trashed=false`);
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&fields=files(id,name)`, { headers: driveHeaders() });
+  if(!res.ok) throw new Error('drive_find_failed');
+  const data = await res.json();
+  return (data.files && data.files[0]) ? data.files[0] : null;
+}
+
+async function driveCreateFile(content){
+  const boundary = 'clinicSysBoundary';
+  const metadata = { name: DRIVE_FILE_NAME, mimeType: 'application/json' };
+  const body =
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n` +
+    `--${boundary}\r\nContent-Type: application/json\r\n\r\n${content}\r\n` +
+    `--${boundary}--`;
+  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+    method: 'POST',
+    headers: driveHeaders({ 'Content-Type': `multipart/related; boundary=${boundary}` }),
+    body
+  });
+  if(!res.ok) throw new Error('drive_create_failed');
+  const data = await res.json();
+  return data.id;
+}
+
+async function driveUpdateFile(fileId, content){
+  const res = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+    method: 'PATCH',
+    headers: driveHeaders({ 'Content-Type': 'application/json' }),
+    body: content
+  });
+  if(!res.ok) throw new Error('drive_update_failed');
+}
+
+async function driveReadFile(fileId){
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, { headers: driveHeaders() });
+  if(!res.ok) throw new Error('drive_read_failed');
+  return await res.text();
+}
+
+async function gatherAllReports(){
+  const reportsMap = {};
+  for(const p of patients){
+    try{
+      const list = await loadReports(p.id);
+      if(list && list.length) reportsMap[p.id] = list;
+    }catch(e){}
+  }
+  return reportsMap;
+}
+
+async function buildFullSnapshot(){
+  return JSON.stringify({
+    patients: patients,
+    pricing: pricing,
+    doctorSignature: doctorSignature,
+    reports: await gatherAllReports(),
+    savedAt: new Date().toISOString()
+  });
+}
+
+async function connectDriveFlow(){
+  try{
+    const existing = await driveFindFile();
+    if(existing){
+      driveFileId = existing.id;
+      const raw = await driveReadFile(driveFileId);
+      const data = raw ? JSON.parse(raw) : {};
+      if(data.patients) patients = data.patients;
+      if(data.pricing) pricing = data.pricing;
+      if(data.doctorSignature) doctorSignature = data.doctorSignature;
+      await window.storage.set('patients_list', JSON.stringify(patients), true);
+      await window.storage.set('pricing_settings', JSON.stringify(pricing), true);
+      await window.storage.set('doctor_signature', JSON.stringify(doctorSignature), true);
+      if(data.reports){
+        for(const pid in data.reports){
+          await window.storage.set('reports:'+pid, JSON.stringify(data.reports[pid]), true);
+        }
+      }
+      render();
+      updateDriveStatus('driveConnectedLoaded');
+    } else {
+      const snapshot = await buildFullSnapshot();
+      driveFileId = await driveCreateFile(snapshot);
+      updateDriveStatus('driveConnectedNew');
+    }
+  }catch(e){
+    updateDriveStatus('driveConnectError');
+  }
+}
+
+function scheduleDriveSync(manual){
+  if(!googleAccessToken) return;
+  clearTimeout(driveSyncTimer);
+  const run = async ()=>{
+    try{
+      if(!driveFileId){
+        const existing = await driveFindFile();
+        driveFileId = existing ? existing.id : await driveCreateFile(await buildFullSnapshot());
+      }
+      const snapshot = await buildFullSnapshot();
+      await driveUpdateFile(driveFileId, snapshot);
+      updateDriveStatus('driveSynced');
+    }catch(e){
+      updateDriveStatus('driveSyncError');
+    }
+  };
+  if(manual){ run(); } else { driveSyncTimer = setTimeout(run, 1200); }
+}
+
+document.getElementById('driveConnectBtn').addEventListener('click', handleDriveButtonClick);
+document.getElementById('driveDisconnectBtn').addEventListener('click', disconnectGoogle);
+
+function daysUntil(dateStr){
+  if(!dateStr) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(dateStr); d.setHours(0,0,0,0);
+  return Math.round((d - today)/(1000*60*60*24));
+}
+function isToday(dateStr){ if(!dateStr) return false; return daysUntil(dateStr) === 0; }
+function statusBadge(dateStr){
+  if(!dateStr) return `<span class="badge ok">${t('noAppointment')}</span>`;
+  const diff = daysUntil(dateStr);
+  if(diff < 0) return `<span class="badge late">${t('overdueDays')(Math.abs(diff))}</span>`;
+  if(diff <= 3) return `<span class="badge soon">${t('soonDays')(diff)}</span>`;
+  return `<span class="badge ok">${dateStr}</span>`;
+}
+function visitBadge(type){
+  if(!type) return '—';
+  if(type === 'Repeat') return `<span class="badge repeat">${t('visitRepeat')}</span>`;
+  return `<span class="badge ok">${t('visitNew')}</span>`;
+}
+function rowClass(dateStr){
+  if(!dateStr) return '';
+  const diff = daysUntil(dateStr);
+  if(diff < 0) return 'row-danger';
+  if(diff <= 3) return 'row-warn';
+  return '';
+}
+function fmtDate(d){ return d || '—'; }
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function renderStats(list){
+  const total = list.length;
+  const late = list.filter(p=>p.nextDate && daysUntil(p.nextDate) < 0).length;
+  const soon = list.filter(p=>p.nextDate && daysUntil(p.nextDate) >= 0 && daysUntil(p.nextDate) <= 3).length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card"><div class="num">${total}</div><div class="label">${t('statTotal')}</div></div>
+    <div class="stat-card warn"><div class="num">${soon}</div><div class="label">${t('statSoon')}</div></div>
+    <div class="stat-card danger"><div class="num">${late}</div><div class="label">${t('statLate')}</div></div>
+  `;
+}
+
+function renderCashCard(){
+  const cashCard = document.getElementById('cashCard');
+  if(currentRole !== 'doctor'){
+    cashCard.style.display = 'none';
+    return;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  const todaysSeen = patients.filter(p => p.examDate === today && p.attended);
+  const newCount = todaysSeen.filter(p => p.visitType !== 'Repeat').length;
+  const repeatCount = todaysSeen.filter(p => p.visitType === 'Repeat').length;
+  const newTotal = newCount * (pricing.newPrice || 0);
+  const repeatTotal = repeatCount * (pricing.repeatPrice || 0);
+  const grandTotal = newTotal + repeatTotal;
+  const pendingCount = patients.filter(p => p.examDate === today && !p.attended).length;
+  const hasPricing = !!(pricing.newPrice || pricing.repeatPrice);
+
+  cashCard.style.display = 'block';
+  document.getElementById('cashCardBody').innerHTML = `
+    ${hasPricing ? `
+    <div><div style="font-size:12px;opacity:.85;">${t('cashNewLabel')}</div><div style="font-size:20px;font-weight:700;">${newCount} × ${pricing.newPrice} = ${newTotal} ${t('currency')}</div></div>
+    <div><div style="font-size:12px;opacity:.85;">${t('cashRepeatLabel')}</div><div style="font-size:20px;font-weight:700;">${repeatCount} × ${pricing.repeatPrice} = ${repeatTotal} ${t('currency')}</div></div>
+    <div><div style="font-size:12px;opacity:.85;">${t('cashTotalLabel')}</div><div style="font-size:22px;font-weight:800;">${grandTotal} ${t('currency')}</div></div>
+    ` : `
+    <div><div style="font-size:12px;opacity:.85;">${t('cashSeenTodayLabel')}</div><div style="font-size:22px;font-weight:800;">${newCount + repeatCount}</div></div>
+    `}
+    <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:6px 14px;">
+      <div style="font-size:12px;opacity:.9;">${t('cashPendingLabel')}</div>
+      <div style="font-size:22px;font-weight:800;${pendingCount > 0 ? 'color:#fde68a;' : ''}">${pendingCount}</div>
+    </div>
+  `;
+}
+
+function getFiltered(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const sort = document.getElementById('sortSelect').value;
+  let list = patients.filter(p=>
+    p.name.toLowerCase().includes(q) || (p.condition||'').toLowerCase().includes(q)
+  );
+  if(currentRole === 'doctor'){
+    if(doctorTab === 'today'){
+      list = list.filter(p=>isToday(p.nextDate) || isToday(p.examDate));
+    } else if(doctorTab === 'upcoming'){
+      list = list.filter(p=>p.nextDate && daysUntil(p.nextDate) >= 0);
+    }
+  }
+  if(sort === 'next_asc'){
+    list.sort((a,b)=>{ if(!a.nextDate) return 1; if(!b.nextDate) return -1; return new Date(a.nextDate)-new Date(b.nextDate); });
+  } else if(sort === 'next_desc'){
+    list.sort((a,b)=>{ if(!a.nextDate) return 1; if(!b.nextDate) return -1; return new Date(b.nextDate)-new Date(a.nextDate); });
+  } else if(sort === 'name'){
+    list.sort((a,b)=>a.name.localeCompare(b.name));
+  } else if(sort === 'exam_desc'){
+    list.sort((a,b)=>new Date(b.examDate)-new Date(a.examDate));
+  }
+  return list;
+}
+
+function render(){
+  const list = getFiltered();
+  renderStats(list);
+  renderCashCard();
+  const content = document.getElementById('content');
+  if(list.length === 0){
+    content.innerHTML = `<div class="empty">${t('emptyState')}</div>`;
+    return;
+  }
+  const showDiagnosisCols = currentRole === 'doctor';
+  let html = `<table><thead><tr>
+    <th>${t('thName')}</th><th>${t('thPhone')}</th><th>${t('thVisitType')}</th><th>${t('thExamDate')}</th>${showDiagnosisCols ? `<th>${t('thCondition')}</th>
+    <th>${t('thTreatment')}</th>` : ''}<th>${t('thNextDate')}</th>${currentRole==='doctor' ? `<th>${t('thAttended')}</th>` : ''}<th>${t('thActions')}</th>
+  </tr></thead><tbody>`;
+  for(const p of list){
+    html += `<tr class="${rowClass(p.nextDate)}">
+      <td><strong>${escapeHtml(p.name)}</strong></td>
+      <td>${escapeHtml(p.phone||'—')}</td>
+      <td>${visitBadge(p.visitType)}</td>
+      <td>${fmtDate(p.examDate)}</td>
+      ${showDiagnosisCols ? `<td>${escapeHtml(p.condition||'—')}</td>
+      <td>${escapeHtml(p.treatment||'—')}</td>` : ''}
+      <td>${statusBadge(p.nextDate)}</td>
+      ${currentRole==='doctor' ? `<td><button type="button" class="icon-btn ${p.attended ? '' : 'edit'}" style="${p.attended ? 'background:var(--teal-light);border-color:var(--teal);color:var(--teal-dark);' : ''}" onclick="toggleAttended('${p.id}')">${p.attended ? t('attendedDone') : t('attendedPending')}</button></td>` : ''}
+      <td class="actions">
+        <button class="icon-btn edit" onclick="editPatient('${p.id}')">${currentRole==='doctor' ? t('btnUpdate') : t('btnEdit')}</button>
+        <button class="icon-btn print" onclick="printPatient('${p.id}')">${t('btnPrint')}</button>
+        ${currentRole==='reception' ? `<button class="icon-btn del" onclick="deletePatient('${p.id}')">${t('btnDelete')}</button>` : ''}
+      </td>
+    </tr>`;
+  }
+  html += '</tbody></table>';
+  content.innerHTML = html;
+}
+
+async function toggleAttended(id){
+  const p = patients.find(x=>x.id===id);
+  if(!p) return;
+  p.attended = !p.attended;
+  await savePatients();
+  render();
+}
+
+function openModal(patient){
+  editingId = patient ? patient.id : null;
+  document.getElementById('modalTitle').textContent = patient ? t('modalEditTitle') : t('modalAddTitle');
+  document.getElementById('f_name').value = patient ? patient.name : '';
+  document.getElementById('f_phone').value = patient ? (patient.phone||'') : '';
+  document.getElementById('f_visitType').value = patient ? (patient.visitType||'New') : 'New';
+  document.getElementById('f_examDate').value = patient ? patient.examDate : '';
+  document.getElementById('f_condition').value = patient ? (patient.condition||'') : '';
+  document.getElementById('f_treatment').value = patient ? (patient.treatment||'') : '';
+  document.getElementById('f_nextDate').value = patient ? (patient.nextDate||'') : '';
+
+  const doctorLocked = currentRole === 'doctor';
+  document.getElementById('f_name').disabled = doctorLocked;
+  document.getElementById('f_phone').disabled = doctorLocked;
+
+  if(currentRole === 'reception'){
+    document.getElementById('diagnosisSection').style.display = 'none';
+    document.getElementById('diagnosisHint').style.display = 'block';
+  } else {
+    document.getElementById('diagnosisSection').style.display = 'block';
+    document.getElementById('diagnosisHint').style.display = 'none';
+  }
+
+  if(editingId){
+    document.getElementById('reportsSection').style.display = 'block';
+    document.getElementById('reportsHint').style.display = 'none';
+    renderReportsList(editingId);
+  } else {
+    document.getElementById('reportsSection').style.display = 'none';
+    document.getElementById('reportsHint').style.display = 'block';
+  }
+
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('overlay').classList.remove('show');
+  editingId = null;
+}
+function editPatient(id){
+  const p = patients.find(x=>x.id===id);
+  if(p) openModal(p);
+}
+async function deletePatient(id){
+  if(!confirm(t('confirmDeletePatient'))) return;
+  patients = patients.filter(p=>p.id!==id);
+  await savePatients();
+  try{ await window.storage.delete('reports:'+id, true); }catch(e){}
+  render();
+}
+
+document.getElementById('addBtn').addEventListener('click', ()=>openModal(null));
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+document.getElementById('overlay').addEventListener('click', (e)=>{ if(e.target.id==='overlay') closeModal(); });
+document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('sortSelect').addEventListener('change', render);
+
+document.getElementById('patientForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('f_name').value.trim();
+  const examDate = document.getElementById('f_examDate').value;
+  if(!name || !examDate){ alert(t('alertFillRequired')); return; }
+  const data = {
+    name,
+    phone: document.getElementById('f_phone').value.trim(),
+    visitType: document.getElementById('f_visitType').value,
+    examDate,
+    condition: document.getElementById('f_condition').value.trim(),
+    treatment: document.getElementById('f_treatment').value.trim(),
+    nextDate: document.getElementById('f_nextDate').value
+  };
+  if(editingId){
+    const idx = patients.findIndex(p=>p.id===editingId);
+    if(idx > -1) patients[idx] = {...patients[idx], ...data};
+  } else {
+    data.id = 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+    patients.push(data);
+  }
+  await savePatients();
+  closeModal();
+  render();
+});
+
+/* Reports (attached files) */
+async function loadReports(patientId){
+  try{
+    const res = await window.storage.get('reports:'+patientId, true);
+    return res && res.value ? JSON.parse(res.value) : [];
+  }catch(e){ return []; }
+}
+async function saveReports(patientId, reports){
+  try{
+    await window.storage.set('reports:'+patientId, JSON.stringify(reports), true);
+    scheduleDriveSync();
+    return true;
+  }catch(e){
+    alert(t('alertReportSaveError'));
+    return false;
+  }
+}
+async function renderReportsList(patientId){
+  const reports = await loadReports(patientId);
+  const container = document.getElementById('reportsList');
+  if(reports.length === 0){
+    container.innerHTML = `<div style="font-size:13px;color:var(--muted);">${t('noReports')}</div>`;
+    return;
+  }
+  container.innerHTML = reports.map(r=>`
+    <div class="report-row">
+      <span>📄 ${escapeHtml(r.name)} <span style="color:var(--muted);font-size:11px;">(${r.uploadDate})</span></span>
+      <span>
+        <button type="button" class="icon-btn" onclick="viewReport('${patientId}','${r.id}')">${t('reportView')}</button>
+        <button type="button" class="icon-btn del" onclick="deleteReport('${patientId}','${r.id}')">${t('reportDelete')}</button>
+      </span>
+    </div>
+  `).join('');
+}
+document.getElementById('reportFileInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file || !editingId) return;
+  if(file.size > 4.2*1024*1024){
+    alert(t('alertFileTooBig'));
+    e.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    const reports = await loadReports(editingId);
+    reports.push({
+      id: 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      name: file.name,
+      type: file.type,
+      dataUrl: reader.result,
+      uploadDate: new Date().toLocaleDateString(t('locale'))
+    });
+    const ok = await saveReports(editingId, reports);
+    if(ok) await renderReportsList(editingId);
+    e.target.value = '';
+  };
+  reader.readAsDataURL(file);
+});
+async function viewReport(patientId, reportId){
+  const reports = await loadReports(patientId);
+  const r = reports.find(x=>x.id===reportId);
+  if(!r) return;
+  const win = window.open();
+  if(!win) { alert(t('alertPopupBlocked')); return; }
+  if(r.type && r.type.startsWith('image/')){
+    win.document.write('<html><body style="margin:0;background:#111;display:flex;justify-content:center;"><img src="'+r.dataUrl+'" style="max-width:100%;"></body></html>');
+  } else {
+    win.document.write('<html><body style="margin:0;"><embed src="'+r.dataUrl+'" width="100%" height="100%" type="'+(r.type||'application/pdf')+'"></body></html>');
+  }
+}
+async function deleteReport(patientId, reportId){
+  if(!confirm(t('confirmDeleteReport'))) return;
+  let reports = await loadReports(patientId);
+  reports = reports.filter(x=>x.id!==reportId);
+  await saveReports(patientId, reports);
+  await renderReportsList(patientId);
+}
+
+/* Print single patient report */
+function printPatient(id){
+  const p = patients.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('printTitle').textContent = t('printReportTitle');
+  document.getElementById('printDate').textContent = t('printDateLabel') + ' ' + new Date().toLocaleDateString(t('locale'));
+
+  const doctorName = (doctorSignature && doctorSignature.doctorName) ? doctorSignature.doctorName : '';
+
+  document.getElementById('printBody').innerHTML = `
+    <div class="print-section">
+      <div class="print-section-title">${t('printPatientInfoTitle')}</div>
+      <div class="print-grid">
+        <div class="print-row"><span class="label">${t('labelName').replace(' *','')}</span><span>${escapeHtml(p.name)}</span></div>
+        <div class="print-row"><span class="label">${t('labelPhone')}</span><span>${escapeHtml(p.phone||'—')}</span></div>
+        <div class="print-row"><span class="label">${t('labelVisitType')}</span><span>${p.visitType==='Repeat' ? t('visitRepeat') : t('visitNew')}</span></div>
+        <div class="print-row"><span class="label">${t('labelExamDate').replace(' *','')}</span><span>${fmtDate(p.examDate)}</span></div>
+        <div class="print-row"><span class="label">${t('labelNextDate')}</span><span>${fmtDate(p.nextDate)}</span></div>
+      </div>
+    </div>
+
+    <div class="print-section">
+      <div class="print-section-title">${t('labelCondition')}</div>
+      <div class="print-box">${escapeHtml(p.condition || t('printNoData'))}</div>
+    </div>
+
+    <div class="print-section">
+      <div class="print-section-title">${t('labelTreatment')}</div>
+      <div class="print-box">${escapeHtml(p.treatment || t('printNoData'))}</div>
+    </div>
+
+    <div class="print-footer">
+      <div class="footer-note">${t('printGeneratedNote')}</div>
+      <div class="print-signature">
+        <div class="sig-line">${doctorName ? escapeHtml(doctorName) : t('printSignatureLabel')}</div>
+        <div class="sig-caption">${t('printSignatureCaption')}</div>
+      </div>
+    </div>
+  `;
+  window.print();
+}
+
+/* Export to Excel-compatible CSV */
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const list = getFiltered();
+  if(list.length === 0){ alert(t('alertNoDataExport')); return; }
+  const headers = [t('csvName'),t('csvPhone'),t('csvVisitType'),t('csvExamDate'),t('csvCondition'),t('csvTreatment'),t('csvNextDate')];
+  const rows = list.map(p=>[p.name, p.phone||'', (p.visitType==='Repeat'?t('visitRepeat'):t('visitNew')), p.examDate||'', p.condition||'', p.treatment||'', p.nextDate||'']);
+  let csv = '\uFEFF' + headers.join(',') + '\n';
+  for(const row of rows){
+    csv += row.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',') + '\n';
+  }
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = t('exportFilePrefix') + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
